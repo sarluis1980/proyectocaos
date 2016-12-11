@@ -1,0 +1,7 @@
+# -*- coding: utf-8 -*-
+# intente algo como
+def index():
+    # Select all the records, to show how
+    # datatables.net paginates.
+    people=db(db.person).select()
+    return dict(results=people)

@@ -1,0 +1,408 @@
+{{extend 'layoutsinmenu.html'}}
+{{if 'message' in globals():}}
+wewerwerdf
+<h3>{{=message}}</h3>
+
+{{pass}}
+
+<script
+  src="{{=URL('static','DataTables-1.10.12/media/js/jquery.dataTables.min.js')}}"
+  src="{{=URL('static','DataTables-1.10.12/media/js/dataTables.bootstrap.min.js')}}">
+
+</script>
+<script type="text/javascript">
+// declaración de variables globales
+
+    var vrmarcap = "0";
+    var vrubicacion="";
+    var vrempresa="";
+    var vrrepprodfac=""; //Repetir producto en la factura
+
+</script>
+<!-- css que contiene el formato de tablas para las facturas -->
+<link rel="stylesheet" href="{{=URL('static','css/ccstablas.css')}}"/>
+<style>
+   #sugerencias { position: relative; }
+    .sugerencias { background: white; border: solid 1px #55A6C8; }
+    .sugerencias DIV { padding: 2px 4px 2px 4px; }
+    #divnombrecliente {
+        margin-left: 0px;
+    }
+    .auto-style1 {
+        height: 30px;
+    }
+</style>
+
+
+<!--DIV que guara dal configuración de la aplicación --><div id="dconfiguracion" style="display:none;"></div>
+
+<form id="frmproducto">
+    <div id="dcliente">
+        &nbsp;<table id="tcliente" style="width: 100%; border: hidden;">
+            <tr>
+                <td class="auto-style1">CLIENTE</td>
+                <td class="auto-style2">
+                    <input id="txtcliente" name="txtcliente" type="text" class="txtid" />
+                    <div style="position: absolute;" id="sugerencias" class="sugerencias"></div>
+                <td class="auto-style1" colspan="2">
+                    <div id="divnombrecliente" ></div>
+                </td>
+                <td class="auto-style1">
+                    <input id="cadenaproducto" name="cadenaproducto" type="text" style="display:none;" />
+                </td>
+                <td class="auto-style2">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="auto-style1">PRODUCTO</td>
+                <td class="auto-style1">
+                    <input id="txtproducto" name="txtproducto" type="text" class="txtid" />
+                    <div style="position: absolute;" id="sugerenciasp" class="sugerencias"></div>
+                    <div id="divcadenaproducto" style="display:none;"></div>
+                <td class="auto-style1" colspan="2">
+                    <div id="divnombreproducto"> </div>
+                </td>
+                <td class="auto-style1">VALOR</td>
+                <td class="auto-style1" colspan="3">
+                    <div id="divvalorproducto"> </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="auto-style1">CANTIDAD</td>
+                <td class="auto-style2">
+                    <input id="txtcantidad" type="number" class="txtCAN" min="1" />
+                </td>
+                <td class="auto-style3">&nbsp;</td>
+                <td class="auto-style1">DESCUENTO</td>
+                <td class="auto-style2">
+                    <input id="txtdescuento"  type="number" class="txtCAN" min="0" />
+                </td>
+                <td class="auto-style3">
+                    <div id="divivaproducto" style="display:none;"> </div>
+                </td>
+                <td class="auto-style1">&nbsp;</td>
+                <td class="auto-style2">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="auto-style2">
+                    <input id="cmdeliminar" type="button" value="Eliminar" style="display:none;" />
+                </td>
+                <td class="auto-style1">&nbsp;</td>
+                <td class="auto-style3" colspan="2">TOTAL FACTURA</td>
+                <td class="auto-style2">
+                    <div id="divvalortotal"> </div>
+                </td>
+                <td class="auto-style3">&nbsp;</td>
+                <td class="auto-style1">&nbsp;</td>
+                <td class="auto-style2">
+                    <input id="cmdagregar" type="button" value="Agregar Producto" />
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</form>
+
+<table id="venta" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th>Código</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Valor Total</th>
+            <th>Iva</th>
+            <th>Descuento</th>
+        </tr>
+    </thead>
+</table>
+
+<table id="tvender" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th style="text-align: right"><input id="cmdvender" type="button" value="Vender" /></th>
+        </tr>
+    </thead>
+</table>
+
+<script type="text/javascript">
+
+/**************** Función que llena y da formato a la tabla de productos al inicio ****************/
+$(document).ready(function(){
+
+    ajax('Cargar_Configuracion', ['cadenaproducto'], 'dconfiguracion');
+
+    /* declaración de variables para el manejo de la seleccion de la fila y la eliminación*/
+
+    var vrcodigo;
+    var vrnombre;
+    var vrcantidad;
+    var vrvalor;
+    var vriva;
+    var vrdescuento;
+
+    var table = $('#venta').DataTable(
+    {
+
+        data:  {{=results}},
+        /* campos a mostrar */
+        columns: [
+            { data: 'IdProducto' },
+            { data: 'NombreProducto' },
+            { data: 'Cantidad' },
+            { data: 'ValorTotalProducto' , render: $.fn.dataTable.render.number( '.', ',', 0, '$' )  },
+            { data: 'ValorIva' , render: $.fn.dataTable.render.number( '.', ',', 0, '%' )  },
+            { data: 'PorcentajeDescuento' , render: $.fn.dataTable.render.number( '.', ',', 0, '$' )  }
+            //{ data: 'IdUbicacion'}
+            // 'id' omitted to show that you can
+            // use only the fields you choose
+        ],
+
+        /* Lenguaje de la tabla */
+        "language": {
+          /*  "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json" */
+            "url": "{{=URL('static','json/Spanish.json')}}"
+        },
+        /* Propiedades de la tabla */
+        "scrollY":        "300px",
+        "scrollCollapse": true,
+        "paging": true,
+        "dom": 'T<"clear">lfrtip',
+        "tableTools": {
+            "sSwfPath": "/swf/copy_csv_xls_pdf.swf"
+        },
+
+     });
+
+/**************** Para habilitar la selección de un solo registro en la tabla ****************/
+    $('#venta tbody').on( 'click', 'tr', function () {
+        if ( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+
+            //vrubicacion ="";
+            vrcodigo ="";
+            vrnombre ="";
+            vrcantidad ="";
+            vrvalor ="";
+            vriva ="";
+            vrdescuento ="";
+            clarear_campos();
+            document.getElementById('cmdeliminar').style.display = 'none'
+
+        }
+        else {
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            /* llena la información tomada de la fila */
+                vrcodigo = $('td', this).eq(0).text();
+                vrnombre = $('td', this).eq(1).text();
+                vrcantidad = $('td', this).eq(2).text();
+                vrvalor =  $('td', this).eq(3).text();
+                vriva = $('td', this).eq(4).text();
+                vrdescuento = $('td', this).eq(5).text();
+                //vrubicacion = $('td', this).eq(6).text();
+                vrmarcap = "1";
+
+                vriva = reemplazar_todo(vriva, ".", "");
+                vrdescuento = reemplazar_todo(vrdescuento, ".", "");
+                vrvalor = reemplazar_todo(vrvalor, ".", "");
+
+                //alert( 'Código del cliente '+codigo+' '+'Nombre '+nombre);
+                document.getElementById('txtproducto').value = vrcodigo;
+                document.getElementById('divnombreproducto').innerHTML = vrnombre;
+                document.getElementById('txtcantidad').value = vrcantidad;
+                document.getElementById('divivaproducto').innerHTML = vriva.replace("%","");
+                document.getElementById('txtdescuento').value = vrdescuento.replace("$","");
+                document.getElementById('divvalorproducto').innerHTML = vrvalor.replace("$","") /vrcantidad;
+
+                document.getElementById('cmdeliminar').style.display = 'block'
+
+        }
+    } );
+
+    jQuery('#cmdeliminar').on('click', function () {
+
+        /* Elimina la fila */
+        vrcadena=document.getElementById('txtproducto').value + '|' + vrubicacion;
+        document.getElementById('cadenaproducto').value=vrcadena;
+
+        ajax('Eliminar_linea_Producto', ['cadenaproducto'], ':eval');
+        table.row('.selected').remove().draw( false );
+        document.getElementById('cmdeliminar').style.display = 'none'
+
+    } );
+
+    /*************** Confirmar venta (Vender) ****************************************/
+    $('#cmdvender').on( 'click', function(){
+
+        ajax('Guardar_Factura', ['cadenaproducto'], ':eval');
+        table
+            .clear()
+            .draw();
+
+    } );
+
+
+});
+
+
+/**************** Función que reemplaza un valor dentro de una cadena de texto ****************/
+function reemplazar_todo(str, busca, cambio){
+
+    var paso;
+    var textoTroceado = str.split (busca);
+    var numeroPalabras = textoTroceado.length;
+
+    for (paso = 1; paso < numeroPalabras; paso++) {
+        str = str.replace(busca, cambio);
+    };
+
+    return str;
+}
+
+/**************** validar cliente ****************/
+jQuery("#txtcliente").keyup(function(){
+        if(event.keyCode == 13){
+            ajax('Buscar_Nit_Cliente', ['txtcliente'], 'divnombrecliente')
+        }else{
+            //document.getElementById('divnombrecliente').innerHTML = '';
+            document.getElementById('sugerencias').style.display = 'block';
+            ajax('seleccion_cliente', ['txtcliente'], 'sugerencias')
+        }
+});
+
+/**************** ocultar div cuando pierde el foco ****************/
+jQuery("#sugerencias").click(function(){
+        document.getElementById('sugerencias').style.display = 'none'
+        var cadena = document.getElementById('txtcliente').value;
+        var palabras = cadena.split("|");
+        document.getElementById('txtcliente').value = palabras[0];
+        document.getElementById('divnombrecliente').innerHTML = palabras[1];
+        document.getElementById('txtcliente').focus();
+});
+
+/**************** validar producto ****************/
+jQuery("#txtproducto").keyup(function(){
+        if(event.keyCode == 13){
+            ajax('Buscar_Producto', ['txtproducto'], 'divcadenaproducto')
+        }else{
+            document.getElementById('divnombreproducto').innerHTML = '';
+            document.getElementById('divvalorproducto').innerHTML = '';
+            document.getElementById('sugerenciasp').style.display = 'block';
+            ajax('seleccion_Producto', ['txtproducto'], 'sugerenciasp')
+        }
+});
+
+/**************** ocultar div cuando pierde el foco ****************/
+jQuery("#sugerenciasp").click(function(){
+        document.getElementById('sugerenciasp').style.display = 'none'
+        var cadena = document.getElementById('txtproducto').value;
+        var palabras = cadena.split("|");
+        document.getElementById('txtproducto').value = palabras[0];
+        document.getElementById('divnombreproducto').innerHTML = palabras[1];
+        document.getElementById('divvalorproducto').innerHTML = palabras[2];
+        document.getElementById('divivaproducto').innerHTML = palabras[3];
+        document.getElementById('txtcantidad').value = 1;
+        document.getElementById('txtproducto').focus();
+});
+
+/**************** Controla que el objeto ajax envie al DIV el valor de la busqueda de producto para procesarla */
+$("#divcadenaproducto").bind("DOMSubtreeModified", function() {
+
+        var cadena = document.getElementById('divcadenaproducto').innerHTML;
+        if (cadena=='0'){
+            document.getElementById('divnombreproducto').innerHTML = 'El producto no existe'
+            document.getElementById('txtproducto').focus();
+        }else{
+            var palabras = cadena.split("|");
+            document.getElementById('txtproducto').value = palabras[0];
+            document.getElementById('divnombreproducto').innerHTML = palabras[1];
+            document.getElementById('divvalorproducto').innerHTML = palabras[2];
+            document.getElementById('divivaproducto').innerHTML = palabras[3];
+            document.getElementById('txtcantidad').value = 1;
+            document.getElementById('txtcantidad').focus();
+        }
+});
+
+/**************** Controla que el objeto ajax envie al DIV el valor de la busqueda de producto para procesarla */
+$("#dconfiguracion").bind("DOMSubtreeModified", function() {
+
+        var cadena = document.getElementById('dconfiguracion').innerHTML;
+        if (cadena=='0'){
+            alert ('No esta parametrizada la configuración de la empresa');
+        }else{
+            var palabras = cadena.split("|");
+            vrubicacion= palabras[1];
+            vrempresa= palabras[0];
+            vrrepprodfac= palabras[2];
+        }
+});
+
+/*************** Agregar productos a la factura ****************************************/
+$('#cmdagregar').on( 'click', function(){
+
+        /* Valida que los campos esten correctamente diligenciados*/
+
+        if (document.getElementById('txtcantidad').value>0 && document.getElementById('divvalorproducto').innerHTML!=""){
+            /* Si no ingresaron el descuento se manda 0 */
+            if (document.getElementById('txtdescuento').value==""){
+                document.getElementById('txtdescuento').value=0
+            }
+            /* Para agregar productos a la tabla temporarl */
+            Valortotal=parseInt(document.getElementById('divvalorproducto').innerHTML) * parseInt(document.getElementById('txtcantidad').value);
+            vrcadena=document.getElementById('txtproducto').value + '|' + document.getElementById('divnombreproducto').innerHTML + '|' + Valortotal + '|' + document.getElementById('txtcantidad').value + '|' + document.getElementById('txtdescuento').value + '|' + document.getElementById('divivaproducto').innerHTML + '|' + vrubicacion;
+
+            document.getElementById('cadenaproducto').value=vrcadena;
+
+            ajax('Agregar_Producto_tmp', ['cadenaproducto'], ':eval');
+
+            /*ajax('index', '', 'dtabla');*/
+            var table = $('#venta').DataTable();
+
+            table.search( document.getElementById('txtproducto').value ).selected;
+            //table.hasClass('selected');
+
+            table.row('1').remove().draw( false );
+            table.search( '' ).selected;
+
+            table.rows.add( [ {
+                "IdProducto":           document.getElementById('txtproducto').value,
+                "NombreProducto":       document.getElementById('divnombreproducto').innerHTML,
+                "Cantidad":             document.getElementById('txtcantidad').value,
+                "ValorTotalProducto":   String(Valortotal),
+                "ValorIva":             document.getElementById('divivaproducto').innerHTML,
+                "PorcentajeDescuento":  document.getElementById('txtdescuento').value,
+                "IdUbicacion":          vrubicacion
+            }] )
+            .draw(false);
+
+            /* Clareamos los datos*/
+            clarear_campos();
+            /* Deseleccionamos la tabla si hay seleccionada alguna fila*/
+            table.$('tr.selected').removeClass('selected');
+            document.getElementById('cmdeliminar').style.display = 'none';
+            //table.search('').selected;
+
+        }else{
+            alert('Se deben diligenciar todos los datos del producto');
+        }
+
+});
+
+
+function clarear_campos(){
+
+    document.getElementById('txtproducto').value = "";
+    document.getElementById('divnombreproducto').innerHTML = "";
+    document.getElementById('txtcantidad').value = "";
+    document.getElementById('divivaproducto').innerHTML = "";
+    document.getElementById('txtdescuento').value = "";
+    document.getElementById('divvalorproducto').innerHTML ="";
+
+}
+
+function Eliminar_Linea_Venta(){
+
+    //ajax('Buscar_Producto', ['txtproducto'], 'divcadenaproducto')
+
+}
+
+</script>

@@ -1,0 +1,219 @@
+(dp1
+S'output'
+p2
+S'Unable to open included view file: C:\\Users\\1229601\\Documents\\web2py\\applications\\ascli\\views\\layoutSinMenu.html'
+p3
+sS'layer'
+p4
+S'ParserContainer'
+p5
+sS'code'
+p6
+S'<div id="dtabla">\r\n{{extend \'layoutSinMenu.html\'}}\r\n{{if \'message\' in globals():}}\r\n\r\n<h3>{{=message}}</h3>\r\n\r\n{{pass}}\r\n\r\n<script\r\n  src="{{=URL(\'static\',\'DataTables-1.10.12/media/js/jquery.dataTables.min.js\')}}"\r\n  src="{{=URL(\'static\',\'DataTables-1.10.12/media/js/dataTables.bootstrap.min.js\')}}">\r\n\r\n</script>\r\n\r\n<!-- css que contiene el formato de tablas para las facturas -->\r\n<link rel="stylesheet" href="{{=URL(\'static\',\'css/ccstablas.css\')}}"/>\r\n<style>\r\n#sugerencias { position: relative; }\r\n.sugerencias { background: white; border: solid 1px #55A6C8; }\r\n.sugerencias DIV { padding: 2px 4px 2px 4px; }\r\n</style>\r\n\r\n\r\n<form id="frmproducto">\r\n    <div id="dcliente">\r\n        &nbsp;<table id="tcliente" style="width: 100%;">\r\n            <tr>\r\n                <td class="auto-style1">CLIENTE</td>\r\n                <td class="auto-style2">\r\n                    <input id="txtcliente" type="text" class="txtid" />\r\n                <td class="auto-style3">&nbsp;</td>\r\n                <td class="auto-style1">&nbsp;</td>\r\n                <td class="auto-style2">&nbsp;</td>\r\n                <td class="auto-style3">&nbsp;</td>\r\n                <td class="auto-style1">&nbsp;</td>\r\n                <td class="auto-style2">&nbsp;</td>\r\n            </tr>\r\n            <tr>\r\n                <td class="auto-style1">PRODUCTO</td>\r\n                <td class="auto-style2">\r\n                    <input id="txtproducto" type="text" class="txtid" />\r\n                <td class="auto-style3">&nbsp;</td>\r\n                <td class="auto-style1">CANTIDAD</td>\r\n                <td class="auto-style2">\r\n                    <input id="txtcantidad" type="text" class="txtCAN" />\r\n                </td>\r\n                <td class="auto-style3">&nbsp;</td>\r\n                <td class="auto-style1">DESCUENTO</td>\r\n                <td class="auto-style2">\r\n                    <input id="txtdescuento" type="text" class="txtCAN" />\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td class="auto-style1">&nbsp;</td>\r\n                <td class="auto-style2">&nbsp;</td>\r\n                <td class="auto-style3">&nbsp;</td>\r\n                <td class="auto-style1">&nbsp;</td>\r\n                <td class="auto-style2">&nbsp;</td>\r\n                <td class="auto-style3">&nbsp;</td>\r\n                <td class="auto-style1">&nbsp;</td>\r\n                <td class="auto-style2">\r\n                    <input id="cmdagregar" type="button" value="Agregar" /></td>\r\n            </tr>\r\n        </table>\r\n    </div>\r\n\r\n</form>\r\n\r\n<script>\r\n   /* jQuery("#mes").keyup(function(){\r\n        ajax(\'refrescar_tabla\', [\'mes\'], \'sugerencias\')});*/\r\n\r\n\r\n\r\n/* para agrear registros a la tabla temporal*/\r\n /*   jQuery(\'#frmproducto\').submit(function() {\r\n  ajax(\'{{=URL(\'Agregar_Producto_Tabla\')}}\',\r\n       [\'txtproducto\'], \'txtcantidad\', \'txtdescuento\');\r\n  return false;*/\r\n\r\n</script>\r\n\r\n<table id="venta" class="display" cellspacing="0" width="100%">\r\n    <thead>\r\n        <tr>\r\n            <th>C\xc3\xb3digo</th>\r\n            <th>Producto</th>\r\n            <th>Cantidad</th>\r\n            <th>Valor Total</th>\r\n            <th>Iva</th>\r\n            <th>% Descuento</th>\r\n        </tr>\r\n    </thead>\r\n</table>\r\n\r\n\r\n<script type="text/javascript">\r\n\r\n\r\n$(document).ready(function(){\r\n/* Funci\xc3\xb3n para mostrar un datatable de jquery    */\r\n\r\n    /*\r\n    $("#hijos").DataTable({\r\n        data:  {{=results}},\r\n        columns: [\r\n            { data: \'first_name\' },\r\n            { data: \'last_name\' }\r\n            // \'id\' omitted to show that you can\r\n            // use only the fields you choose\r\n        ],\r\n        "language": {\r\n            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"\r\n        },\r\n        "scrollY":        "300px",\r\n        "scrollCollapse": true,\r\n        "paging": true\r\n    })\r\n    */\r\n\r\n    var table = $(\'#venta\').DataTable(\r\n    {\r\n        \r\n        data:  {{=results}},\r\n        /* campos a mostrar */\r\n        columns: [\r\n            { data: \'IdProducto\' },\r\n            { data: \'NombreProducto\' },\r\n            { data: \'Cantidad\' },\r\n            { data: \'ValorTotalProducto\' },\r\n            { data: \'ValorIva\' },\r\n            { data: \'PorcentajeDescuento\' }\r\n            // \'id\' omitted to show that you can\r\n            // use only the fields you choose\r\n        ],\r\n        /* Botones a mostrar */\r\n       /* buttons: [\r\n            \'copy\', \'excel\', \'pdf\'\r\n        ],*/\r\n        /* Lenguaje de la tabla */\r\n        "language": {\r\n          /*  "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json" */\r\n            "url": "{{=URL(\'static\',\'json/Spanish.json\')}}"\r\n        },\r\n        /* Propiedades de la tabla */\r\n        "scrollY":        "300px",\r\n        "scrollCollapse": true,\r\n        "paging": true,\r\n        "dom": \'T<"clear">lfrtip\',\r\n        "tableTools": {\r\n            "sSwfPath": "/swf/copy_csv_xls_pdf.swf"\r\n        },\r\n\r\n    }\r\n    );\r\n\r\n    /* Para habilitar la selecci\xc3\xb3n de un solo registro en la tabla */\r\n    $(\'#venta tbody\').on( \'click\', \'tr\', function () {\r\n        if ( $(this).hasClass(\'selected\') ) {\r\n            $(this).removeClass(\'selected\');\r\n        }\r\n        else {\r\n            table.$(\'tr.selected\').removeClass(\'selected\');\r\n            $(this).addClass(\'selected\');\r\n        }\r\n    } );\r\n\r\n    $(\'#button\').click( function () {\r\n        table.row(\'.selected\').remove().draw( false );\r\n    } );\r\n\r\n    $(\'#cmdagregar\').on( \'click\', function()\r\n        {\r\n/*\r\n        var dataSet ="";\r\n\r\n            ajax(\'Agregar_Producto_Tabla\', \'\', \'dataSet\');\r\n            $(\'#venta\').DataTable( {\r\n               data: dataSet,\r\n\r\n            } );*/\r\n            \r\n            ajax(\'Agregar_Producto_tmp\', \'\', \'destino\');\r\n            ajax(\'index\', \'\', \'dtabla\');\r\n            \r\n\r\n        });\r\n\r\n/*\r\n    $(\'#cmdagregar\').on( \'click\', function()\r\n    {\r\n\r\n            table.row.add(\r\n            [{\r\n                "IdProducto": "345",\r\n                "PorcentajeDescuento": "5",\r\n                "Cantidad": "5",\r\n                "NombreProducto": "sdfds",\r\n                "ValorIva": "4",\r\n                "ValorTotalProducto": "45"\r\n            }\r\n\r\n\r\n          /*db.Field(\'IdVenta\', type=\'double\', label=T(u\'IdVenta\'),comment=\'xxx\'),\r\n            db.Field(\'IdProducto\', type=\'double\', label=T(u\'IdProducto\'),comment=\'xxx\'),\r\n            db.Field(\'NombreProducto\', type=\'text\', label=T(u\'NombreProducto\'),comment=\'xxx\'),\r\n            db.Field(\'IdUbicacion\', type=\'text\', length=2, label=T(u\'IdUbicacion\'),comment=\'xxx\'),\r\n            db.Field(\'Cantidad\', type=\'double\', label=T(u\'Cantidad\'),comment=\'xxx\'),\r\n            db.Field(\'ValorTotalProducto\', type=\'double\', label=T(u\'ValorTotalProducto\'),comment=\'xxx\'),\r\n            db.Field(\'ValorIva\', type=\'double\', label=T(u\'ValorIva\'),comment=\'xxx\'),\r\n            db.Field(\'PorcentajeDescuento\', type=\'double\', label=T(u\'PorcentajeDescuento\'),comment=\'xxx\')\r\n                /*685.0, 2.0, 1.0, 5.0,  \'otro\',  3.0,  2.0, \'\',  1\r\n                \'6.0\', \'5.0\', "Comodoro", \'2.0\', \'2.0\', \'3.0\', \'685.0\' */\r\n               /* "IdVenta": "343",\r\n                "IdProducto": 343,\r\n                "NombreProducto": "System Architect",\r\n                "IdUbicacion": " ",\r\n                "Cantidad": "3",\r\n                "ValorTotalProducto": "20115",\r\n                "ValorIva": "23",\r\n                "PorcentajeDescuento": "5421"*//*\r\n\r\n            ]).draw();\r\n\r\n\r\n    });\r\n*/\r\n    /* Tomar la informaci\xc3\xb3n de la fila */\r\n     $(\'#venta tbody\').on(\'click\', \'tr\', function () {\r\n        var codigo = $(\'td\', this).eq(0).text();\r\n\r\n        var nombre = $(\'td\', this).eq(1).text();\r\n        alert( \'C\xc3\xb3digo del cliente \'+codigo+\' \'+\'Nombre \'+nombre);\r\n\r\n    } );\r\n\r\n});\r\n\r\n\r\n/*var table = $(\'#venta\').DataTable();\r\n\r\ntable.ajax.reload( function ( json ) {\r\n    $(\'#cmdagregar\').val( json.lastInput );\r\n} );\r\n*/\r\n\r\n/*jQuery("#cmdagregar").keypress(function(){\r\n      ajax(\'refrescar_tabla\')});*/\r\n\r\n\r\n\r\n</script>\r\n\r\n\r\n<div id="destino"></div>\r\n<table id="tvender" class="display" cellspacing="0" width="100%">\r\n    <thead>\r\n        <tr>\r\n            <th style="text-align: right"><input id="cmdvender" type="button" value="Vender" /></th>\r\n        </tr>\r\n    </thead>\r\n</table>\r\n</div>\r\n'
+p7
+sS'snapshot'
+p8
+(dp9
+S'exception'
+p10
+(dp11
+S'__getslice__'
+p12
+S"<method-wrapper '__getslice__' of exceptions.IOError object>"
+p13
+sS'__str__'
+p14
+S"<method-wrapper '__str__' of exceptions.IOError object>"
+p15
+sS'__reduce__'
+p16
+S'<built-in method __reduce__ of exceptions.IOError object>'
+p17
+sS'__dict__'
+p18
+S'{}'
+p19
+sS'__sizeof__'
+p20
+S'<built-in method __sizeof__ of exceptions.IOError object>'
+p21
+sS'__init__'
+p22
+S"<method-wrapper '__init__' of exceptions.IOError object>"
+p23
+sS'__setattr__'
+p24
+S"<method-wrapper '__setattr__' of exceptions.IOError object>"
+p25
+sS'__reduce_ex__'
+p26
+S'<built-in method __reduce_ex__ of exceptions.IOError object>'
+p27
+sS'__new__'
+p28
+S'<built-in method __new__ of type object>'
+p29
+sS'errno'
+p30
+S'2'
+sS'__format__'
+p31
+S'<built-in method __format__ of exceptions.IOError object>'
+p32
+sS'__class__'
+p33
+S"<type 'exceptions.IOError'>"
+p34
+sS'filename'
+p35
+S"r'C:\\Users\\1229601\\Documents\\web2py\\applications\\ascli\\views\\layoutSinMenu.html'"
+p36
+sS'__doc__'
+p37
+S"'I/O operation failed.'"
+p38
+sS'__getitem__'
+p39
+S"<method-wrapper '__getitem__' of exceptions.IOError object>"
+p40
+sS'__setstate__'
+p41
+S'<built-in method __setstate__ of exceptions.IOError object>'
+p42
+sS'__getattribute__'
+p43
+S"<method-wrapper '__getattribute__' of exceptions.IOError object>"
+p44
+sS'args'
+p45
+S"(2, 'No such file or directory')"
+p46
+sS'__subclasshook__'
+p47
+S'<built-in method __subclasshook__ of type object>'
+p48
+sS'__unicode__'
+p49
+S'<built-in method __unicode__ of exceptions.IOError object>'
+p50
+sS'strerror'
+p51
+S"'No such file or directory'"
+p52
+sS'__delattr__'
+p53
+S"<method-wrapper '__delattr__' of exceptions.IOError object>"
+p54
+sS'__repr__'
+p55
+S"<method-wrapper '__repr__' of exceptions.IOError object>"
+p56
+sS'__hash__'
+p57
+S"<method-wrapper '__hash__' of exceptions.IOError object>"
+p58
+ssS'evalue'
+p59
+S"[Errno 2] No such file or directory: 'C:\\\\Users\\\\1229601\\\\Documents\\\\web2py\\\\applications\\\\ascli\\\\views\\\\layoutSinMenu.html'"
+p60
+sS'frames'
+p61
+(lp62
+(dp63
+S'file'
+p64
+S'C:\\Users\\1229601\\Documents\\web2py\\gluon\\template.py'
+p65
+sS'dump'
+p66
+(dp67
+S'builtinopen'
+p68
+S'<built-in function open>'
+p69
+sS'fileobj'
+p70
+S'undefined'
+p71
+sS'filepath'
+p72
+S"r'C:\\Users\\1229601\\Documents\\web2py\\applications\\ascli\\views\\layoutSinMenu.html'"
+p73
+ssS'lnum'
+p74
+I450
+sS'lines'
+p75
+(dp76
+I448
+S'        # try to read the text.'
+p77
+sI449
+S'        try:'
+p78
+sI450
+S"            fileobj = open(filepath, 'rb')"
+p79
+sI451
+S'            text = fileobj.read()'
+p80
+sI452
+S'            fileobj.close()'
+p81
+sI453
+S'        except IOError:'
+p82
+sI454
+S"            self._raise_error('Unable to open included view file: ' + filepath)"
+p83
+sI445
+S'        # Get the path of the file on the system.'
+p84
+sI446
+S'        filepath = self.path and os.path.join(self.path, filename) or filename'
+p85
+sI447
+S''
+ssS'call'
+p86
+S"(self=<gluon.template.TemplateParser object>, filename='layoutSinMenu.html')"
+p87
+sS'func'
+p88
+S'_get_file_text'
+p89
+sasS'pyver'
+p90
+S'Python 2.7.9: C:\\Users\\1229601\\Documents\\web2py\\web2py.exe (prefix: C:\\Python27)'
+p91
+sS'etype'
+p92
+S"<type 'exceptions.IOError'>"
+p93
+sS'date'
+p94
+S'Thu Sep 15 11:32:34 2016'
+p95
+sS'locals'
+p96
+(dp97
+S'self'
+p98
+S'<gluon.template.TemplateParser object>'
+p99
+sg35
+S"'layoutSinMenu.html'"
+p100
+sS'context'
+p101
+S"{'A': <class 'gluon.html.A'>, 'ANY_OF': <class 'gluon.validators.ANY_OF'>, 'ASSIGNJS': <function ASSIGNJS>, 'AppConfig': <function AppConfig>, 'Auth': <class 'gluon.tools.Auth'>, 'B': <class 'gluon.html.B'>, 'BEAUTIFY': <class 'gluon.html.BEAUTIFY'>, 'BODY': <class 'gluon.html.BODY'>, 'BR': <class 'gluon.html.BR'>, 'BUTTON': <class 'gluon.html.BUTTON'>, ...}"
+p102
+sS'filepath'
+p103
+S"r'C:\\Users\\1229601\\Documents\\web2py\\applications\\ascli\\views\\layoutSinMenu.html'"
+p104
+sssS'traceback'
+p105
+S'Traceback (most recent call last):\n  File "C:\\Users\\1229601\\Documents\\web2py\\gluon\\template.py", line 450, in _get_file_text\n    fileobj = open(filepath, \'rb\')\nIOError: [Errno 2] No such file or directory: \'C:\\\\Users\\\\1229601\\\\Documents\\\\web2py\\\\applications\\\\ascli\\\\views\\\\layoutSinMenu.html\'\n'
+p106
+s.

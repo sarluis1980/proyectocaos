@@ -1,0 +1,8 @@
+# -*- coding: utf-8 -*-
+# intente algo como
+def index():
+    form=SQLFORM.smartgrid(db.tbTurnoEmpleado, editable=True,deletable=True,create=True)
+
+    response.flash="Bienvenido"
+
+    return dict(message="hello from turno_empleado.py")

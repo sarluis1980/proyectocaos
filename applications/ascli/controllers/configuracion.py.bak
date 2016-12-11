@@ -1,0 +1,12 @@
+# -*- coding: utf-8 -*-
+# intente algo como
+#def index(): return dict(message="hello from configuracion.py")
+
+def index():
+    formulario=SQLFORM.factory(db.tbconfigura,db.tbUbicacionBodegaAlmacen)
+    if formulario.process().accepted:
+        id = db.tbconfigura.insert(**db.tbconfigura._filter_fields(formulario.vars))
+        formulario.vars.IdUbicacion=id
+        id = db.tbUbicacionBodegaAlmacen.insert(**db.tbUbicacionBodegaAlmacen._filter_fields(formulario.vars))
+        response.flash='Gracias por completar el formulario'
+    return dict(formulario=formulario)

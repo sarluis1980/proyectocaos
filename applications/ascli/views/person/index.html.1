@@ -1,0 +1,89 @@
+{{extend 'layout.html'}}
+{{if 'message' in globals():}}
+
+<h3>{{=message}}</h3>
+
+{{pass}}
+<script
+  src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"
+  src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"
+  src="https://code.jquery.com/jquery-1.12.3.js">
+</script>
+<link rel="stylesheet"   media="screen"   href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css">
+<style type="text/css">
+
+		th, td code { white-space: nowrap; }
+
+		</style>
+<table id="hijos" class="demo cell-border" cellspacing="0" width="100%">
+
+<thead>
+
+<tr>
+
+<th>Nombre</th>
+
+
+<th>apellido</th>
+
+            </tr>
+
+        </thead>
+
+    </table>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    /*
+    $("#hijos").DataTable({
+        data:  {{=results}},
+        columns: [
+            { data: 'first_name' },
+            { data: 'last_name' }
+            // 'id' omitted to show that you can
+            // use only the fields you choose
+        ],
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+        },
+        "scrollY":        "300px",
+        "scrollCollapse": true,
+        "paging": true
+    })
+    */
+
+    var table = $('#hijos').DataTable(
+    {
+        data:  {{=results}},
+        columns: [
+            { data: 'first_name' },
+            { data: 'last_name' }
+            // 'id' omitted to show that you can
+            // use only the fields you choose
+        ],
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+        },
+        "scrollY":        "300px",
+        "scrollCollapse": true,
+        "paging": true
+    }
+    );
+
+    $('#hijos tbody').on( 'click', 'tr', function () {
+        if ( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+        }
+        else {
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+        }
+    } );
+
+    $('#button').click( function () {
+        table.row('.selected').remove().draw( false );
+    } );
+
+});
+
+</script>
